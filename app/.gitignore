@@ -1,0 +1,31 @@
+# Android Studio / IntelliJ
+.idea/
+*.iml
+local.properties
+/.gradle/
+
+# Build outputs
+/build/
+app/build/
+captures/
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# Misc
+.DS_Store
+Thumbs.db
+*.class
+*.jar
+*.apk
+*.dex
+
+# Keystore files
+*.jks
+*.keystore
+
+# Logs
+*.log/build
