@@ -1,62 +1,113 @@
 package com.example.emergencycontacthelper;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "emergency_contacts.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final String DB_NAME = "emergency.db";
+    private static final int VERSION = 2;
 
-    public static final String TABLE_USERS = "users";
-    public static final String TABLE_CONTACTS = "emergency_contacts";
-
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_USERNAME = "username";
-    public static final String COLUMN_PASSWORD = "password";
-
-    public static final String COLUMN_USER_ID = "user_id";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_PHONE = "phone";
-    public static final String COLUMN_NOTES = "notes";
-
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public DatabaseHelper(Context context){
+        super(context,DB_NAME,null,VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("DB_TEST", "Creating database tables...");
 
-        String createUsers = "CREATE TABLE " + TABLE_USERS + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_USERNAME + " TEXT UNIQUE NOT NULL, "
-                + COLUMN_PASSWORD + " TEXT NOT NULL"
-                + ");";
+        db.execSQL(
+                "CREATE TABLE users(" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "username TEXT UNIQUE," +
+                        "email TEXT UNIQUE," +
+                        "password TEXT)"
+        );
 
-        String createContacts = "CREATE TABLE " + TABLE_CONTACTS + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_USER_ID + " INTEGER NOT NULL, "
-                + COLUMN_NAME + " TEXT NOT NULL, "
-                + COLUMN_PHONE + " TEXT NOT NULL, "
-                + COLUMN_NOTES + " TEXT, "
-                + "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ") ON DELETE CASCADE"
-                + ");";
-
-        db.execSQL(createUsers);
-        Log.d("DB_TEST", "Users table created");
-
-        db.execSQL(createContacts);
-        Log.d("DB_TEST", "EmergencyContacts table created");
+        db.execSQL(
+                "CREATE TABLE contacts(" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "user_id INTEGER," +
+                        "name TEXT," +
+                        "phone TEXT," +
+                        "note TEXT)"
+        );
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w("DB_TEST", "Upgrading database from " + oldVersion + " to " + newVersion);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+    public void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion){
+        db.execSQL("DROP TABLE IF EXISTS users");
+        db.execSQL("DROP TABLE IF EXISTS contacts");
         onCreate(db);
+    }
+
+    /* ---------------- Authentication ---------------- */
+
+    public boolean registerUser(String username,String email,String password){
+
+        SQLiteDatabase db=getWritableDatabase();
+
+        ContentValues cv=new ContentValues();
+        cv.put("username",username);
+        cv.put("email",email);
+        cv.put("password",password);
+
+        return db.insert("users",null,cv)!=-1;
+    }
+
+    public long loginUser(String username,String password){
+
+        SQLiteDatabase db=getReadableDatabase();
+
+        Cursor cursor=db.query(
+                "users",
+                new String[]{"_id"},
+                "username=? AND password=?",
+                new String[]{username,password},
+                null,null,null
+        );
+
+        long id=-1;
+
+        if(cursor.moveToFirst()){
+            id=cursor.getLong(0);
+        }
+
+        cursor.close();
+        return id;
+    }
+
+    /* ---------------- Contacts ---------------- */
+
+    // Add contact
+    public long addContact(long userId,String name,String phone,String note){
+
+        SQLiteDatabase db=getWritableDatabase();
+
+        ContentValues cv=new ContentValues();
+        cv.put("user_id",userId);
+        cv.put("name",name);
+        cv.put("phone",phone);
+        cv.put("note",note);
+
+        return db.insert("contacts",null,cv);
+    }
+
+    // Get user contacts (THIS WAS MISSING BEFORE)
+    public Cursor getUserContacts(long userId){
+
+        SQLiteDatabase db=getReadableDatabase();
+
+        return db.query(
+                "contacts",
+                null,
+                "user_id=?",
+                new String[]{String.valueOf(userId)},
+                null,
+                null,
+                "name ASC"
+        );
     }
 }
