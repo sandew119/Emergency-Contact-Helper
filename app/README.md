@@ -1,31 +1,29 @@
-# Emergency Contact Helper - ICT3214 Project
+Emergency Contact Helper - ICT3214 Project
 
-## Description
-Android app for storing and quickly accessing personal emergency contacts.  
-Focus: Safety information. Users can register/login, add/edit/delete their own contacts with name, phone, and optional notes.
+Description
+App for storing emergency contacts with login, register, add/edit/delete contacts, quick list, notes.
 
-## Features
-- User registration & login (hashed passwords)
-- Store emergency contacts (CRUD operations)
-- User-specific data only (via foreign key)
-- Quick access contact list
-- Basic input validation
+Features
+- Login/register with validation
+- Hashed passwords
+- Add/edit/delete contacts with notes
+- User-specific list
+- SOS SMS
+- Logout
 
-## Technologies
-- Language: Java
-- Database: SQLite (Users + EmergencyContacts tables)
-- Authentication: SHA-256 password hashing
-- Session: SharedPreferences
-- IDE: Android Studio
+Technologies
+- Java
+- SQLite DB with foreign key
+- SharedPreferences session
+- ListView for list
 
-## Team Members
-- H.M.S.S.W. Bandara - ICT/2022/145
-- Ranabhahu -
-- Piyumui -
+Team
+- H.M.S.S.W. Bandara | ICT/2022/145 | 5946
+- R.M.D.S.N.Ranabahu | ICT/2022/151 | 5947
+- M.J.H.A.P. Madushani | ICT/2022/142 | 5743
 
 
-## How to run
-1. Clone repo
-2. Open in Android Studio
-3. Sync Gradle
-4. Run on emulator/device
+- Piyumi
+
+Setup
+Clone, open in Android Studio, run.

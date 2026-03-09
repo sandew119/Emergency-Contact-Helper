@@ -17,7 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         db.execSQL(
                 "CREATE TABLE users(" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -25,7 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "email TEXT UNIQUE," +
                         "password TEXT)"
         );
-
         db.execSQL(
                 "CREATE TABLE contacts(" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -43,71 +41,91 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /* ---------------- Authentication ---------------- */
-
+    // Register user with hashed password
     public boolean registerUser(String username,String email,String password){
-
         SQLiteDatabase db=getWritableDatabase();
-
         ContentValues cv=new ContentValues();
         cv.put("username",username);
         cv.put("email",email);
-        cv.put("password",password);
-
+        cv.put("password",PasswordUtils.hashPassword(password));
         return db.insert("users",null,cv)!=-1;
     }
 
+    // Login user with hashed password
     public long loginUser(String username,String password){
-
         SQLiteDatabase db=getReadableDatabase();
-
         Cursor cursor=db.query(
                 "users",
                 new String[]{"_id"},
                 "username=? AND password=?",
-                new String[]{username,password},
+                new String[]{username,PasswordUtils.hashPassword(password)},
                 null,null,null
         );
-
         long id=-1;
-
         if(cursor.moveToFirst()){
             id=cursor.getLong(0);
         }
-
         cursor.close();
         return id;
     }
 
-    /* ---------------- Contacts ---------------- */
-
     // Add contact
     public long addContact(long userId,String name,String phone,String note){
-
         SQLiteDatabase db=getWritableDatabase();
-
         ContentValues cv=new ContentValues();
         cv.put("user_id",userId);
         cv.put("name",name);
         cv.put("phone",phone);
         cv.put("note",note);
-
         return db.insert("contacts",null,cv);
     }
 
-    // Get user contacts (THIS WAS MISSING BEFORE)
+    // Get user contacts
     public Cursor getUserContacts(long userId){
-
         SQLiteDatabase db=getReadableDatabase();
-
         return db.query(
                 "contacts",
                 null,
                 "user_id=?",
                 new String[]{String.valueOf(userId)},
+                null, null, "name ASC"
+        );
+    }
+
+    // Get contact by ID for edit
+    public Cursor getContactById(long contactId){
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(
+                "contacts",
                 null,
-                null,
-                "name ASC"
+                "_id=?",
+                new String[]{String.valueOf(contactId)},
+                null, null, null
+        );
+    }
+
+    // Update contact
+    public int updateContact(long contactId,String name,String phone,String note){
+        SQLiteDatabase db=getWritableDatabase();
+        ContentValues cv=new ContentValues();
+        cv.put("name",name);
+        cv.put("phone",phone);
+        cv.put("note",note);
+        return db.update(
+                "contacts",
+                cv,
+                "_id=?",
+                new String[]{String.valueOf(contactId)}
+        );
+    }
+
+    // Delete contact
+    public int deleteContact(long contactId){
+        SQLiteDatabase db=getWritableDatabase();
+        return db.delete(
+                "contacts",
+                "_id=?",
+                new String[]{String.valueOf(contactId)}
         );
     }
 }
