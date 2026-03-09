@@ -3,7 +3,9 @@ package com.example.emergencycontacthelper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,36 +13,30 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText etUsername,etEmail,etPassword,etConfirm;
     Button btnRegister;
-
     DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         db=new DatabaseHelper(this);
-
         etUsername=findViewById(R.id.etUsername);
         etEmail=findViewById(R.id.etEmail);
         etPassword=findViewById(R.id.etPassword);
         etConfirm=findViewById(R.id.etConfirmPassword);
-
         btnRegister=findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(v -> register());
     }
 
     private void register(){
-
         String username=etUsername.getText().toString().trim();
         String email=etEmail.getText().toString().trim();
         String pass=etPassword.getText().toString();
         String confirm=etConfirm.getText().toString();
 
-        if(username.isEmpty()||email.isEmpty()||
-                pass.isEmpty()||confirm.isEmpty()){
+        if(username.isEmpty()||email.isEmpty()|| pass.isEmpty()||confirm.isEmpty()){
             Toast.makeText(this,"Fill all fields",Toast.LENGTH_SHORT).show();
             return;
         }
@@ -50,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        if(pass.length()<6){
+        if (pass.length() < 6) {
             Toast.makeText(this,"Password 6+ chars",Toast.LENGTH_SHORT).show();
             return;
         }
@@ -60,13 +56,13 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        String hash=PasswordUtils.hashPassword(pass);
-
-        if(db.registerUser(username,email,hash)){
+        boolean success=db.registerUser(username,email,pass);
+        if(success){
             Toast.makeText(this,"Registered",Toast.LENGTH_SHORT).show();
-
             startActivity(new Intent(this,LoginActivity.class));
             finish();
+        } else {
+            Toast.makeText(this,"Username or email exists",Toast.LENGTH_SHORT).show();
         }
     }
 }

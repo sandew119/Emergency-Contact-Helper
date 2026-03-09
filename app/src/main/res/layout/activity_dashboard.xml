@@ -10,11 +10,13 @@
 
     <Button
         android:id="@+id/btnSOS"
-        android:text="SOS EMERGENCY"
-        android:backgroundTint="#FF3B30"
-        android:textColor="#FFFFFF"
         android:layout_width="match_parent"
-        android:layout_height="60dp"/>
+        android:layout_height="wrap_content"
+        android:text="Send Message"
+        android:backgroundTint="#00F5FF"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btnContacts"
