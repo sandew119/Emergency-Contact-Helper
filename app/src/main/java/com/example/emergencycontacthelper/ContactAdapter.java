@@ -16,7 +16,6 @@ public class ContactAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        // Inflate each row
         return LayoutInflater.from(context).inflate(R.layout.item_contact, parent, false);
     }
 
@@ -24,11 +23,14 @@ public class ContactAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tvName = view.findViewById(R.id.tvName);
         TextView tvPhone = view.findViewById(R.id.tvPhone);
+        TextView tvNote = view.findViewById(R.id.tvNote);
 
         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
         String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+        String note = cursor.getString(cursor.getColumnIndexOrThrow("note"));
 
         tvName.setText(name);
         tvPhone.setText(phone);
+        tvNote.setText(note);
     }
 }
