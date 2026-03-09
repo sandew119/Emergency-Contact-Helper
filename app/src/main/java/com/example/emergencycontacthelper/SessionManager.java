@@ -5,35 +5,38 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
+    private static final String PREF_NAME = "user_session";
+    private static final String KEY_USER_ID = "user_id";
 
-    private static final String PREF_NAME = "EmergencySession";
-    private static final String KEY_LOGGED = "logged";
-    private static final String KEY_USER_ID = "userId";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private Context context;
 
     public SessionManager(Context context) {
-
-        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        editor = prefs.edit();
+        this.context = context;
+        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
+    // Save login session
     public void createLoginSession(long userId) {
-
-        editor.putBoolean(KEY_LOGGED, true);
         editor.putLong(KEY_USER_ID, userId);
         editor.apply();
     }
 
+    // Get logged-in user ID
     public long getUserId() {
-        return prefs.getLong(KEY_USER_ID, -1);
+        return sharedPreferences.getLong(KEY_USER_ID, -1);
     }
 
-    public boolean isLoggedIn() {
-        return prefs.getBoolean(KEY_LOGGED, false);
-    }
-
+    // Logout user
     public void logout() {
-        editor.clear().apply();
+        editor.clear();
+        editor.apply();
+    }
+
+    // Check if user is logged in
+    public boolean isLoggedIn() {
+        return getUserId() != -1;
     }
 }
