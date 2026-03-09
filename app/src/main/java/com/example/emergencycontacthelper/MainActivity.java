@@ -1,10 +1,9 @@
 package com.example.emergencycontacthelper;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,33 +13,36 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private EditText etUsername, etPassword;
-    private Button btnLogin, btnRegister;
     private DatabaseHelper dbHelper;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Session Management: Check if user is already logged in
+        sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        int savedUserId = sharedPreferences.getInt("USER_ID", -1);
+
+        if (savedUserId != -1) {
+            goToHome(savedUserId);
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         dbHelper = new DatabaseHelper(this);
 
         etUsername = findViewById(R.id.et_username);
         etPassword = findViewById(R.id.et_password);
-        btnLogin = findViewById(R.id.btn_login);
-        btnRegister = findViewById(R.id.btn_register);
+        Button btnLogin = findViewById(R.id.btn_login);
+        Button btnRegister = findViewById(R.id.btn_register);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        btnLogin.setOnClickListener(v -> login());
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                register();
-            }
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -48,55 +50,34 @@ public class MainActivity extends AppCompatActivity {
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+        if (username.isEmpty()) {
+            etUsername.setError("Username required");
+            return;
+        }
+        if (password.isEmpty()) {
+            etPassword.setError("Password required");
             return;
         }
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {DatabaseHelper.COLUMN_ID};
-        String selection = DatabaseHelper.COLUMN_USERNAME + " = ? AND " + DatabaseHelper.COLUMN_PASSWORD + " = ?";
-        String[] selectionArgs = {username, password};
+        if (dbHelper.checkUser(username, password)) {
+            int userId = dbHelper.getUserId(username);
 
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_USERS,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+            // Save session
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("USER_ID", userId);
+            editor.apply();
 
-        if (cursor != null && cursor.moveToFirst()) {
             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            // Proceed to next activity (e.g., Contact List)
-            cursor.close();
+            goToHome(userId);
         } else {
             Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void register() {
-        String username = etUsername.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_USERNAME, username);
-        values.put(DatabaseHelper.COLUMN_PASSWORD, password);
-
-        long newRowId = db.insert(DatabaseHelper.TABLE_USERS, null, values);
-
-        if (newRowId != -1) {
-            Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Registration Failed (User might already exist)", Toast.LENGTH_SHORT).show();
-        }
+    private void goToHome(int userId) {
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("USER_ID", userId);
+        startActivity(intent);
+        finish();
     }
 }

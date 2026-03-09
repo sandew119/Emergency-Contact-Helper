@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EmergencyContactHelper"
-        android:debuggable="true"
         tools:ignore="HardcodedDebugMode">
 
         <activity
@@ -23,6 +27,10 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <activity android:name=".HomeActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".AddEditContactActivity" android:exported="false" />
+        <activity android:name=".ContactListActivity" android:exported="false" />
 
+    </application>
 </manifest>

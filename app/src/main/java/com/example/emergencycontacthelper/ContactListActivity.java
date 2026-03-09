@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ContactListActivity extends AppCompatActivity {
 
-    DatabaseHelper dbHelper;
-    ListView listView;
-    Button btnAdd;
-    long userId;
+    private DatabaseHelper dbHelper;
+    private ListView listView;
+    private Button btnAdd;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,6 @@ public class ContactListActivity extends AppCompatActivity {
         ContactAdapter adapter = new ContactAdapter(this, cursor);
         listView.setAdapter(adapter);
 
-        // Tap row → Edit
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(ContactListActivity.this, AddEditContactActivity.class);
             intent.putExtra("CONTACT_ID", id);
@@ -50,7 +49,6 @@ public class ContactListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Long press → Delete
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
             new AlertDialog.Builder(ContactListActivity.this)
                     .setTitle("Delete Contact")
