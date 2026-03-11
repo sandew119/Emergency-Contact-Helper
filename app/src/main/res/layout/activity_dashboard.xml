@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center"
     android:orientation="vertical"
     android:padding="30dp"
+    android:gravity="center"
     android:background="#F2F5FF"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:text="Emergency Contact Helper"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#1E3A8A"
+        android:layout_marginBottom="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/btnSOS"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send Message"
-        android:backgroundTint="#00F5FF"
+        android:text="SEND EMERGENCY MESSAGE"
+        android:backgroundTint="#FF3B30"
         android:textColor="@android:color/white"
-        android:textAllCaps="false"
-        android:layout_marginTop="16dp"/>
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
 
     <Button
         android:id="@+id/btnContacts"
-        android:text="My Contacts"
+        android:text="Manage Contacts"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"/>
