@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.emergencycontacthelper">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions go here -->
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -15,21 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EmergencyContactHelper"
-        android:debuggable="true"
         tools:ignore="HardcodedDebugMode">
 
-        <activity android:name=".LoginActivity" android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".ContactListActivity" />
-        <activity android:name=".AddEditContactActivity" />
+        <activity android:name=".HomeActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".AddEditContactActivity" android:exported="false" />
+        <activity android:name=".ContactListActivity" android:exported="false" />
 
     </application>
-
 </manifest>

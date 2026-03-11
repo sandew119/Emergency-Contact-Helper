@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 public class ContactAdapter extends CursorAdapter {
 
-    public ContactAdapter(Context context, Cursor c) {
-        super(context, c, 0);
+    public ContactAdapter(Context context, Cursor cursor) {
+        super(context, cursor, 0);
     }
 
     @Override
@@ -21,16 +21,13 @@ public class ContactAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView tvName = view.findViewById(R.id.tvName);
-        TextView tvPhone = view.findViewById(R.id.tvPhone);
-        TextView tvNote = view.findViewById(R.id.tvNote);
+        TextView tvName = view.findViewById(R.id.tvContactName);
+        TextView tvPhone = view.findViewById(R.id.tvContactPhone);
 
-        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-        String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
-        String note = cursor.getString(cursor.getColumnIndexOrThrow("note"));
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NAME));
+        String phone = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE));
 
         tvName.setText(name);
         tvPhone.setText(phone);
-        tvNote.setText(note);
     }
 }

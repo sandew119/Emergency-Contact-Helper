@@ -1,5 +1,6 @@
 package com.example.emergencycontacthelper;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -10,12 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AddEditContactActivity extends AppCompatActivity {
 
-    EditText etName, etPhone, etNote;
-    Button btnSave;
-    DatabaseHelper dbHelper;
+    private EditText etName, etPhone, etNote;
+    private Button btnSave;
+    private DatabaseHelper dbHelper;
 
-    long userId = -1;
-    long contactId = -1;
+    private long userId = -1;
+    private long contactId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,6 @@ public class AddEditContactActivity extends AppCompatActivity {
         userId = getIntent().getLongExtra("USER_ID", -1);
         contactId = getIntent().getLongExtra("CONTACT_ID", -1);
 
-        // If editing, load existing contact
         if (contactId != -1) {
             loadContact();
         }
@@ -41,13 +41,15 @@ public class AddEditContactActivity extends AppCompatActivity {
     }
 
     private void loadContact() {
-        var cursor = dbHelper.getContactById(contactId);
-        if (cursor.moveToFirst()) {
-            etName.setText(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-            etPhone.setText(cursor.getString(cursor.getColumnIndexOrThrow("phone")));
-            etNote.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
+        Cursor cursor = dbHelper.getContactById(contactId);
+        if (cursor != null && cursor.moveToFirst()) {
+            etName.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NAME)));
+            etPhone.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE)));
+            etNote.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NOTES)));
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
     }
 
     private void saveContact() {
@@ -60,18 +62,18 @@ public class AddEditContactActivity extends AppCompatActivity {
             return;
         }
 
-        long result;
+        boolean success;
         if (contactId == -1) {
-            // Add new contact
-            result = dbHelper.addContact(userId, name, phone, note);
+            long result = dbHelper.addContact(userId, name, phone, note);
+            success = result != -1;
         } else {
-            // Update existing
-            result = dbHelper.updateContact(contactId, name, phone, note);
+            int result = dbHelper.updateContact(contactId, name, phone, note);
+            success = result > 0;
         }
 
-        if (result != -1) {
+        if (success) {
             Toast.makeText(this, "Contact saved", Toast.LENGTH_SHORT).show();
-            finish(); // Go back to contact list
+            finish();
         } else {
             Toast.makeText(this, "Error saving contact", Toast.LENGTH_SHORT).show();
         }
