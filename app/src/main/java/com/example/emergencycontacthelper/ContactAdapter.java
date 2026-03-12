@@ -10,11 +10,17 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class ContactAdapter extends CursorAdapter {
 
+    private DatabaseHelper dbHelper;
+
     public ContactAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
+        dbHelper = new DatabaseHelper(context);
     }
 
     @Override
@@ -29,10 +35,14 @@ public class ContactAdapter extends CursorAdapter {
         TextView tvPhone = view.findViewById(R.id.tvPhone);
         TextView tvNote = view.findViewById(R.id.tvNote);
         ImageButton btnCall = view.findViewById(R.id.btnCall);
+        ImageButton btnEdit = view.findViewById(R.id.btnEdit);
+        ImageButton btnDelete = view.findViewById(R.id.btnDelete);
 
-        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-        String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
-        String note = cursor.getString(cursor.getColumnIndexOrThrow("note"));
+        final long contactId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+        final String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+        final String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+        final String note = cursor.getString(cursor.getColumnIndexOrThrow("note"));
+        final long userId = cursor.getLong(cursor.getColumnIndexOrThrow("user_id"));
 
         tvName.setText(name);
         tvPhone.setText(phone);
@@ -43,6 +53,31 @@ public class ContactAdapter extends CursorAdapter {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:" + phone));
             context.startActivity(intent);
+        });
+
+        // Edit icon click
+        btnEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(context, AddEditContactActivity.class);
+            intent.putExtra("CONTACT_ID", contactId);
+            intent.putExtra("USER_ID", userId);
+            context.startActivity(intent);
+        });
+
+        // Delete icon click
+        btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Contact")
+                    .setMessage("Are you sure you want to delete " + name + "?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        dbHelper.deleteContact(contactId);
+                        // Refresh the list
+                        if (context instanceof ContactListActivity) {
+                            ((ContactListActivity) context).onResume();
+                        }
+                        Toast.makeText(context, "Contact deleted", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
     }
 }

@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ContactListActivity extends AppCompatActivity {
 
-    DatabaseHelper dbHelper;
-    ListView listView;
-    Button btnAdd;
-    long userId;
+    private DatabaseHelper dbHelper;
+    private ListView listView;
+    private Button btnAdd, btnDashboard;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class ContactListActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         listView = findViewById(R.id.list_contacts);
         btnAdd = findViewById(R.id.btnAdd);
+        btnDashboard = findViewById(R.id.btnDashboard);
         userId = getIntent().getLongExtra("USER_ID", -1);
 
         btnAdd.setOnClickListener(v -> {
@@ -33,6 +34,8 @@ public class ContactListActivity extends AppCompatActivity {
             intent.putExtra("USER_ID", userId);
             startActivity(intent);
         });
+
+        btnDashboard.setOnClickListener(v -> finish());
 
         loadContacts();
     }
@@ -42,15 +45,9 @@ public class ContactListActivity extends AppCompatActivity {
         ContactAdapter adapter = new ContactAdapter(this, cursor);
         listView.setAdapter(adapter);
 
-        // Tap row → Edit
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(ContactListActivity.this, AddEditContactActivity.class);
-            intent.putExtra("CONTACT_ID", id);
-            intent.putExtra("USER_ID", userId);
-            startActivity(intent);
-        });
+        // REMOVED CLICK LISTENER FOR EDITING
+        // listView.setOnItemClickListener(...) 
 
-        // Long press → Delete
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
             new AlertDialog.Builder(ContactListActivity.this)
                     .setTitle("Delete Contact")

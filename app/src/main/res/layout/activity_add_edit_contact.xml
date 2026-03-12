@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -9,6 +8,7 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tvTitle"
         android:text="Add Emergency Contact"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -44,6 +44,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <CheckBox
+        android:id="@+id/cbIsEmergency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Mark as Quick Emergency Dial"
+        android:textColor="@color/red_dark"
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/btnSave"
         android:text="SAVE CONTACT"
@@ -51,6 +60,15 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:backgroundTint="@color/red_primary"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/btnBack"
+        android:text="BACK"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/red_dark"
         android:textColor="@color/white"/>
 
 </LinearLayout>
