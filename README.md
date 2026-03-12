@@ -2,6 +2,7 @@ ICT3214 - Mobile Application Development-Group Project
 Emergency Contact Helper 
 
 Description
+
 Emergency Contact Helper is a safety-focused Android application designed to provide users with quick access to their most important contacts during critical situations.
 
 Features
