@@ -6,6 +6,7 @@ Description
 Emergency Contact Helper is a safety-focused Android application designed to provide users with quick access to their most important contacts during critical situations.
 
 Features
+
 User Authentication: Secure registration and login system with hashed password storage.
 Emergency Contact Management: Full CRUD (Create, Read, Update, Delete) functionality to manage a personal list of contacts.
 Quick Dial: A dedicated interface to instantly view and call contacts specifically marked as "Emergency."
@@ -16,6 +17,7 @@ Note ---> In Add contact form Name and Number are requied to add contact but Num
 10 digits) because emergency numbers length can be different.
 
 Technologies
+
 1. Core Language & Framework
 Java: The primary programming language for the Android application logic.
 Android SDK: The development framework used to build and run the app.
@@ -40,6 +42,7 @@ Custom Password Hashing: Utilizes a PasswordUtils class to hash passwords before
 CRUD Operations: Full implementation of Create, Read, Update, and Delete for the emergency contacts.
 
 Team
+
 - H.M.S.S.W. Bandara | ICT/2022/145 | 5946
 - R.M.D.S.N. Ranabahu | ICT/2022/151 | 5947
 - M.J.H.A.P. Madushani | ICT/2022/142 | 5743
