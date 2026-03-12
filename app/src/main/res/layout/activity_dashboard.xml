@@ -30,7 +30,7 @@
 
     <Button
         android:id="@+id/btnSOS"
-        android:text="Send SOS Message"
+        android:text="Send Message"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_width="match_parent"
