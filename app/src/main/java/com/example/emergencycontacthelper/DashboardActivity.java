@@ -9,29 +9,37 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    Button btnSendSMS, btnLogout, btnContacts;
-    long userId;
+    private Button btnSendSMS, btnLogout, btnContacts, btnQuickDial;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        btnSendSMS = findViewById(R.id.btnSOS); // keep the same id
+        btnQuickDial = findViewById(R.id.btnQuickDial);
+        btnSendSMS = findViewById(R.id.btnSOS);
         btnLogout = findViewById(R.id.btnLogout);
         btnContacts = findViewById(R.id.btnContacts);
 
-        userId = getIntent().getLongExtra("USER_ID",-1);
+        userId = getIntent().getLongExtra("USER_ID", -1);
+
+        // Quick Dial
+        btnQuickDial.setOnClickListener(v -> {
+            Intent intent = new Intent(this, QuickDialActivity.class);
+            intent.putExtra("USER_ID", userId);
+            startActivity(intent);
+        });
 
         // Send SMS
         btnSendSMS.setOnClickListener(v -> {
             Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-            smsIntent.setData(Uri.parse("sms:")); // opens default SMS app
-            smsIntent.putExtra("sms_body","Emergency Help Needed!");
+            smsIntent.setData(Uri.parse("sms:"));
+            smsIntent.putExtra("sms_body", "Emergency Help Needed!");
             startActivity(smsIntent);
         });
 
-        // Go to Contacts
+        // Manage Contacts
         btnContacts.setOnClickListener(v -> {
             Intent intent = new Intent(this, ContactListActivity.class);
             intent.putExtra("USER_ID", userId);

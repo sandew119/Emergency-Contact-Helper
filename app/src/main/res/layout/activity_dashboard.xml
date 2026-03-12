@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -18,11 +17,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <!-- SOS BUTTON -->
+    <Button
+        android:id="@+id/btnQuickDial"
+        android:text="Quick Dial"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/red_primary"
+        android:textColor="@color/white"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/btnSOS"
-        android:text="Send Message"
+        android:text="Send SOS Message"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_width="match_parent"

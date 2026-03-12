@@ -9,7 +9,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "emergency.db";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3; // Incremented version to add is_emergency column
+
+    public static final String TABLE_CONTACTS = "contacts";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_USER_ID = "user_id";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_PHONE = "phone";
+    public static final String COLUMN_NOTE = "note";
+    public static final String COLUMN_IS_EMERGENCY = "is_emergency";
 
     public DatabaseHelper(Context context){
         super(context, DB_NAME, null, VERSION);
@@ -27,20 +35,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
 
         db.execSQL(
-                "CREATE TABLE contacts(" +
-                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "user_id INTEGER," +
-                        "name TEXT," +
-                        "phone TEXT," +
-                        "note TEXT)"
+                "CREATE TABLE " + TABLE_CONTACTS + "(" +
+                        COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        COLUMN_USER_ID + " INTEGER," +
+                        COLUMN_NAME + " TEXT," +
+                        COLUMN_PHONE + " TEXT," +
+                        COLUMN_NOTE + " TEXT," +
+                        COLUMN_IS_EMERGENCY + " INTEGER DEFAULT 0)"
         );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        db.execSQL("DROP TABLE IF EXISTS users");
-        db.execSQL("DROP TABLE IF EXISTS contacts");
-        onCreate(db);
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_CONTACTS + " ADD COLUMN " + COLUMN_IS_EMERGENCY + " INTEGER DEFAULT 0");
+        }
     }
 
     // Register User
@@ -84,17 +93,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Add Contact
-    public long addContact(long userId, String name, String phone, String note){
+    public long addContact(long userId, String name, String phone, String note, int isEmergency){
 
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        cv.put("user_id", userId);
-        cv.put("name", name);
-        cv.put("phone", phone);
-        cv.put("note", note);
+        cv.put(COLUMN_USER_ID, userId);
+        cv.put(COLUMN_NAME, name);
+        cv.put(COLUMN_PHONE, phone);
+        cv.put(COLUMN_NOTE, note);
+        cv.put(COLUMN_IS_EMERGENCY, isEmergency);
 
-        return db.insert("contacts", null, cv);
+        return db.insert(TABLE_CONTACTS, null, cv);
     }
 
     // Get User Contacts
@@ -103,13 +113,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         return db.query(
-                "contacts",
+                TABLE_CONTACTS,
                 null,
-                "user_id=?",
+                COLUMN_USER_ID + "=?",
                 new String[]{String.valueOf(userId)},
                 null,
                 null,
-                "name ASC"
+                COLUMN_NAME + " ASC"
+        );
+    }
+
+    // Get Emergency Contacts only
+    public Cursor getQuickDialContacts(long userId){
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(
+                TABLE_CONTACTS,
+                null,
+                COLUMN_USER_ID + "=? AND " + COLUMN_IS_EMERGENCY + "=1",
+                new String[]{String.valueOf(userId)},
+                null,
+                null,
+                COLUMN_NAME + " ASC"
         );
     }
 
@@ -119,9 +143,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         return db.query(
-                "contacts",
+                TABLE_CONTACTS,
                 null,
-                "_id=?",
+                COLUMN_ID + "=?",
                 new String[]{String.valueOf(contactId)},
                 null,
                 null,
@@ -130,19 +154,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Update Contact
-    public int updateContact(long contactId, String name, String phone, String note){
+    public int updateContact(long contactId, String name, String phone, String note, int isEmergency){
 
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        cv.put("name", name);
-        cv.put("phone", phone);
-        cv.put("note", note);
+        cv.put(COLUMN_NAME, name);
+        cv.put(COLUMN_PHONE, phone);
+        cv.put(COLUMN_NOTE, note);
+        cv.put(COLUMN_IS_EMERGENCY, isEmergency);
 
         return db.update(
-                "contacts",
+                TABLE_CONTACTS,
                 cv,
-                "_id=?",
+                COLUMN_ID + "=?",
                 new String[]{String.valueOf(contactId)}
         );
     }
@@ -153,8 +178,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         return db.delete(
-                "contacts",
-                "_id=?",
+                TABLE_CONTACTS,
+                COLUMN_ID + "=?",
                 new String[]{String.valueOf(contactId)}
         );
     }
