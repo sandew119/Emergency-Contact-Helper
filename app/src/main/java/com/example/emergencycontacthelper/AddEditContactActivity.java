@@ -15,7 +15,7 @@ public class AddEditContactActivity extends AppCompatActivity {
 
     private EditText etName, etPhone, etNote;
     private CheckBox cbIsEmergency;
-    private Button btnSave;
+    private Button btnSave, btnBack;
     private TextView tvTitle;
     private DatabaseHelper dbHelper;
 
@@ -35,6 +35,7 @@ public class AddEditContactActivity extends AppCompatActivity {
         etNote = findViewById(R.id.etNote);
         cbIsEmergency = findViewById(R.id.cbIsEmergency);
         btnSave = findViewById(R.id.btnSave);
+        btnBack = findViewById(R.id.btnBack);
 
         userId = getIntent().getLongExtra("USER_ID", -1);
         contactId = getIntent().getLongExtra("CONTACT_ID", -1);
@@ -45,6 +46,7 @@ public class AddEditContactActivity extends AppCompatActivity {
         }
 
         btnSave.setOnClickListener(v -> saveContact());
+        btnBack.setOnClickListener(v -> finish());
     }
 
     private void loadContact() {

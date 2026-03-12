@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -23,6 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:backgroundTint="@color/red_primary"
+        android:textColor="@color/white"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/btnDashboard"
+        android:text="Back to Dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/red_dark"
         android:textColor="@color/white"/>
 
     <ListView

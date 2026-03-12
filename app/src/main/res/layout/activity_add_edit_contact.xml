@@ -62,4 +62,13 @@
         android:backgroundTint="@color/red_primary"
         android:textColor="@color/white"/>
 
+    <Button
+        android:id="@+id/btnBack"
+        android:text="BACK"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/red_dark"
+        android:textColor="@color/white"/>
+
 </LinearLayout>
